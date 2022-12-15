@@ -3,6 +3,8 @@ package Practice_5.Ex001;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 //Реализуйте структуру телефонной книги с помощью HashMap, учитывая, что один человек может иметь несколько телефонов.
@@ -24,7 +26,7 @@ public class Ex001 {
             }
             switch (choice) {
                 case "1":
-                    System.out.println("Введите фамилию и номер");
+                    System.out.println("Введите фамилию и номер через запятую");
                     String contactData = uScanner.nextLine();
                     addContact(map, contactData);
                     System.out.println(map);
@@ -34,11 +36,11 @@ public class Ex001 {
                     String searchData = uScanner.nextLine();
                     searchContact(map, searchData);
                     break;
-                // case "3":
-                // System.out.println("Введите фамилию или номер для удаления");
-                // String deleteData = scan.nextLine();
-                // deleteContact(deleteData);
-                // break;
+                case "3":
+                    System.out.println("Введите фамилию или номер для удаления");
+                    String deleteData = uScanner.nextLine();
+                    deleteContact(map, deleteData);
+                    break;
                 default:
                     break;
             }
@@ -54,35 +56,98 @@ public class Ex001 {
     }
 
     public static void addContact(HashMap<Integer, ArrayList<String>> book, String addData) {
-        String[] personAndPhone = addData.trim().split(" ");
-        // System.out.println(personAndPhone[0] + " " + personAndPhone[1]);
-        if (!book.keySet().isEmpty()) {
+        addData.toLowerCase();
+        String[] personAndPhone = addData.trim().split(",");
+        if (personAndPhone.length==2){
+            personAndPhone[1] = personAndPhone[1].trim();
+        }
+        if (personAndPhone.length > 2) {
+            System.out.println("Слишком много данных, попробуйте еще раз.");
+            return;
+        }
+        if (personAndPhone.length < 2) {
+            System.out.println("Слишком мало данных  или они введены неверно, попробуйте еще раз.");
+            return;
+        }
+        if (book.isEmpty()) {
+            ArrayList<String> person = new ArrayList<String>(Arrays.asList(personAndPhone));
+            book.put(1, person);
+        } else {
+            boolean check = false;
             for (Integer key : book.keySet()) {
                 if (book.get(key).get(0).equals(personAndPhone[0])) {
                     book.get(key).add(personAndPhone[1]);
-
-                } else {
-                    book.put(book.values().size() + 1, new ArrayList<String>(Arrays.asList(personAndPhone)));
+                    check = true;
                 }
             }
-        } else {
-            book.put(book.values().size() + 1, new ArrayList<String>(Arrays.asList(personAndPhone)));
+            if (!check) {
+                book.put(book.values().size() + 1, new ArrayList<String>(Arrays.asList(personAndPhone)));
+            }
         }
         System.out.printf("Контакт %s добавлен в справочник.\n", addData);
     }
-    public static void searchContact(HashMap<Integer, ArrayList<String>> book,String dataForSearch) {
+
+    public static void searchContact(HashMap<Integer, ArrayList<String>> book, String dataForSearch) {
         String personOrPhone = dataForSearch.trim();
-        // System.out.println(personAndPhone[0] + " " + personAndPhone[1]);
+        Boolean check = false;
         if (!book.keySet().isEmpty()) {
             for (Integer key : book.keySet()) {
-                if (book..equals())
                 if (book.get(key).contains(personOrPhone)) {
                     System.out.println(book.get(key));
+                    check=true;
                 }
             }
-            System.out.println("Контакт не найден"); 
+            if (check == false) {
+                System.out.println("Контакт не найден");
+            }
+
         } else {
             System.out.println("В книге нет контактов.");
         }
+    }
+
+    public static void deleteContact(HashMap<Integer, ArrayList<String>> book, String dataToDelete) {
+        String personOrPhone = dataToDelete.trim();
+        boolean check = false;
+        if (!book.keySet().isEmpty()) {
+            for (HashMap.Entry<Integer,ArrayList<String>> entry: book.entrySet()) {
+                if (entry.getValue().contains(personOrPhone)) {
+                    check = true;
+                    if (entry.getValue().get(0).equals(personOrPhone)) {
+                        Integer keyDelete = entry.getKey();
+                        ArrayList<String> valueDelete = entry.getValue();
+                        System.out.println("Элемент " + book.remove(keyDelete, valueDelete) + " удален");
+
+                    } else {
+                        int indToDelet = entry.getValue().indexOf(personOrPhone);
+                        String deletedPhone = entry.getValue().remove(indToDelet);
+                        System.out.println("Телефон " + deletedPhone + " удален\n");
+
+                    }
+                }
+
+            // for (Integer key : book.keySet()) {
+            //     if (book.get(key).contains(personOrPhone)) {
+            //         if (book.get(key).get(0) == personOrPhone) {
+            //             ArrayList<String> deleted = book.remove(key);
+
+            //             System.out.println("Элемент " + deleted + " удален");
+
+            //         } else {
+            //             int indToDelet = book.get(key).indexOf(personOrPhone);
+            //             ArrayList<String> deletedList = book.get(key);
+            //             String deletedPhone = deletedList.remove(indToDelet);
+            //             System.out.println("Элемент " + deletedPhone + "удален\n" + deletedList);
+
+            //         }
+            //     }
+            }
+            if (check == false) {
+                System.out.println("Контакт не найден");
+            }
+        } else {
+            System.out.println("В книге нет контактов.");
+        }
+        System.out.println(book);
     }
 }
