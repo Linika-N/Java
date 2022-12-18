@@ -3,8 +3,6 @@ package Practice_5.Ex001;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 //Реализуйте структуру телефонной книги с помощью HashMap, учитывая, что один человек может иметь несколько телефонов.
@@ -110,37 +108,19 @@ public class Ex001 {
         String personOrPhone = dataToDelete.trim();
         boolean check = false;
         if (!book.keySet().isEmpty()) {
-            for (HashMap.Entry<Integer,ArrayList<String>> entry: book.entrySet()) {
-                if (entry.getValue().contains(personOrPhone)) {
+            for (Integer key: book.keySet()) {
+                if (book.get(key).contains(personOrPhone)) {
                     check = true;
-                    if (entry.getValue().get(0).equals(personOrPhone)) {
-                        Integer keyDelete = entry.getKey();
-                        ArrayList<String> valueDelete = entry.getValue();
-                        System.out.println("Элемент " + book.remove(keyDelete, valueDelete) + " удален");
+                    if (book.get(key).get(0).equals(personOrPhone)) {
+                        System.out.println("Элемент " + book.remove(key) + " удален");
 
                     } else {
-                        int indToDelet = entry.getValue().indexOf(personOrPhone);
-                        String deletedPhone = entry.getValue().remove(indToDelet);
+                        int indToDelet = book.get(key).indexOf(personOrPhone);
+                        String deletedPhone = book.get(key).remove(indToDelet);
                         System.out.println("Телефон " + deletedPhone + " удален\n");
 
                     }
                 }
-
-            // for (Integer key : book.keySet()) {
-            //     if (book.get(key).contains(personOrPhone)) {
-            //         if (book.get(key).get(0) == personOrPhone) {
-            //             ArrayList<String> deleted = book.remove(key);
-
-            //             System.out.println("Элемент " + deleted + " удален");
-
-            //         } else {
-            //             int indToDelet = book.get(key).indexOf(personOrPhone);
-            //             ArrayList<String> deletedList = book.get(key);
-            //             String deletedPhone = deletedList.remove(indToDelet);
-            //             System.out.println("Элемент " + deletedPhone + "удален\n" + deletedList);
-
-            //         }
-            //     }
             }
             if (check == false) {
                 System.out.println("Контакт не найден");
